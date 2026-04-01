@@ -25,6 +25,7 @@ public class TrainConsistUC3 {
             System.out.println(" -> ERROR: Bogie BG101 is already registered! Duplicate ignored.");
         }
 
+
         System.out.println("Registering Bogie ID: BG103");
         bogieIDs.add("BG103");
 
