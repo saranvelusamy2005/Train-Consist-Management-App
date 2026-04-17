@@ -2,11 +2,23 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.regex.*;
 
+// ✅ Custom Exception (UC14)
+class InvalidCapacityException extends Exception {
+    public InvalidCapacityException(String message) {
+        super(message);
+    }
+}
+
+// Passenger Bogie
 class Bogie {
     String name;
     int capacity;
 
-    Bogie(String name, int capacity) {
+    // Constructor with validation (UC14)
+    Bogie(String name, int capacity) throws InvalidCapacityException {
+        if (capacity <= 0) {
+            throw new InvalidCapacityException("Capacity must be greater than zero");
+        }
         this.name = name;
         this.capacity = capacity;
     }
@@ -16,7 +28,7 @@ class Bogie {
     }
 }
 
-// New class for UC12
+// Goods Bogie (UC12)
 class GoodsBogie {
     String type;
     String cargo;
@@ -30,62 +42,109 @@ class GoodsBogie {
 public class TrainConsistManagementApp {
     public static void main(String[] args) {
 
-        // ---------- UC7 ----------
-        List<Bogie> bogies = new ArrayList<>();
+        try {
 
-        bogies.add(new Bogie("Sleeper", 72));
-        bogies.add(new Bogie("AC Chair", 56));
-        bogies.add(new Bogie("First Class", 40));
-        bogies.add(new Bogie("Sleeper", 80));
+            // ---------- UC7 ----------
+            List<Bogie> bogies = new ArrayList<>();
 
-        bogies.sort(Comparator.comparingInt(b -> b.capacity));
+            bogies.add(new Bogie("Sleeper", 72));
+            bogies.add(new Bogie("AC Chair", 56));
+            bogies.add(new Bogie("First Class", 40));
+            bogies.add(new Bogie("Sleeper", 80));
 
-        // ---------- UC8 ----------
-        List<Bogie> filtered = bogies.stream()
-                .filter(b -> b.capacity > 60)
-                .toList();
+            // Sort
+            bogies.sort(Comparator.comparingInt(b -> b.capacity));
 
-        // ---------- UC9 ----------
-        Map<String, List<Bogie>> grouped = bogies.stream()
-                .collect(Collectors.groupingBy(b -> b.name));
+            System.out.println("After Sorting:");
+            bogies.forEach(System.out::println);
 
-        // ---------- UC10 ----------
-        int total = bogies.stream()
-                .map(b -> b.capacity)
-                .reduce(0, Integer::sum);
+            // ---------- UC8 ----------
+            System.out.println("\nUC8: Filter capacity > 60");
 
-        System.out.println("Total Seats = " + total);
+            List<Bogie> filtered = bogies.stream()
+                    .filter(b -> b.capacity > 60)
+                    .toList();
 
-        // ---------- UC11 ----------
-        Pattern trainPattern = Pattern.compile("TRN-\\d{4}");
-        Pattern cargoPattern = Pattern.compile("PET-[A-Z]{2}");
+            filtered.forEach(System.out::println);
 
-        String trainId = "TRN-1234";
-        String cargoCode = "PET-AB";
+            // ---------- UC9 ----------
+            System.out.println("\nUC9: Grouping");
 
-        System.out.println("Train ID Valid: " + trainPattern.matcher(trainId).matches());
-        System.out.println("Cargo Code Valid: " + cargoPattern.matcher(cargoCode).matches());
+            Map<String, List<Bogie>> grouped = bogies.stream()
+                    .collect(Collectors.groupingBy(b -> b.name));
 
-        // ---------- UC12: Safety Check ----------
-        System.out.println("\nUC12: Safety Compliance Check");
+            grouped.forEach((k, v) -> {
+                System.out.println(k + ":");
+                v.forEach(b -> System.out.println("  " + b));
+            });
 
-        List<GoodsBogie> goodsList = new ArrayList<>();
+            // ---------- UC10 ----------
+            int total = bogies.stream()
+                    .map(b -> b.capacity)
+                    .reduce(0, Integer::sum);
 
-        goodsList.add(new GoodsBogie("Cylindrical", "Petroleum"));
-        goodsList.add(new GoodsBogie("Open", "Coal"));
-        goodsList.add(new GoodsBogie("Box", "Grain"));
-        System.out.println("UC13 Completed");
-        // Safety rule using allMatch
-        boolean isSafe = goodsList.stream()
-                .allMatch(g ->
-                        !g.type.equalsIgnoreCase("Cylindrical")
-                                || g.cargo.equalsIgnoreCase("Petroleum")
-                );
+            System.out.println("\nTotal Seats = " + total);
 
-        if (isSafe) {
-            System.out.println("Train is SAFE");
-        } else {
-            System.out.println("Train is UNSAFE");
+            // ---------- UC11 ----------
+            Pattern trainPattern = Pattern.compile("TRN-\\d{4}");
+            Pattern cargoPattern = Pattern.compile("PET-[A-Z]{2}");
+
+            System.out.println("\nUC11 Validation:");
+            System.out.println(trainPattern.matcher("TRN-1234").matches());
+            System.out.println(cargoPattern.matcher("PET-AB").matches());
+
+            // ---------- UC12 ----------
+            System.out.println("\nUC12 Safety Check");
+
+            List<GoodsBogie> goodsList = List.of(
+                    new GoodsBogie("Cylindrical", "Petroleum"),
+                    new GoodsBogie("Open", "Coal")
+            );
+
+            boolean isSafe = goodsList.stream()
+                    .allMatch(g ->
+                            !g.type.equalsIgnoreCase("Cylindrical")
+                                    || g.cargo.equalsIgnoreCase("Petroleum")
+                    );
+
+            System.out.println(isSafe ? "SAFE" : "UNSAFE");
+
+            // ---------- UC13 ----------
+            System.out.println("\nUC13 Performance");
+
+            List<Bogie> bigList = new ArrayList<>();
+            for (int i = 0; i < 10000; i++) {
+                bigList.add(new Bogie("Sleeper", 50 + (i % 50)));
+            }
+
+            long startLoop = System.nanoTime();
+            List<Bogie> loopResult = new ArrayList<>();
+            for (Bogie b : bigList) {
+                if (b.capacity > 60) loopResult.add(b);
+            }
+            long endLoop = System.nanoTime();
+
+            long startStream = System.nanoTime();
+            List<Bogie> streamResult = bigList.stream()
+                    .filter(b -> b.capacity > 60)
+                    .toList();
+            long endStream = System.nanoTime();
+
+            System.out.println("Loop Time: " + (endLoop - startLoop));
+            System.out.println("Stream Time: " + (endStream - startStream));
+
+            // ---------- UC14 ----------
+            System.out.println("\nUC14: Exception Handling");
+
+            // VALID
+            Bogie valid = new Bogie("Sleeper", 70);
+            System.out.println("Valid Bogie Created: " + valid);
+
+            // INVALID
+            Bogie invalid = new Bogie("AC Chair", -10); // will throw exception
+
+        } catch (InvalidCapacityException e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 }
