@@ -16,7 +16,7 @@ class Bogie {
     }
 }
 
-public class TrainConsistUC7 {
+public class TrainConsistManagementApp{
     public static void main(String[] args) {
 
         // Create list of bogies
