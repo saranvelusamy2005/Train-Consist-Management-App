@@ -74,7 +74,7 @@ public class TrainConsistManagementApp {
         goodsList.add(new GoodsBogie("Cylindrical", "Petroleum"));
         goodsList.add(new GoodsBogie("Open", "Coal"));
         goodsList.add(new GoodsBogie("Box", "Grain"));
-
+        System.out.println("UC13 Completed");
         // Safety rule using allMatch
         boolean isSafe = goodsList.stream()
                 .allMatch(g ->
