@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 class Bogie {
     String name;
@@ -10,7 +11,7 @@ class Bogie {
         this.capacity = capacity;
     }
 
-    // toString method
+    // Display
     public String toString() {
         return name + " - Capacity: " + capacity;
     }
@@ -25,6 +26,7 @@ public class TrainConsistManagementApp {
         bogies.add(new Bogie("Sleeper", 72));
         bogies.add(new Bogie("AC Chair", 56));
         bogies.add(new Bogie("First Class", 40));
+        bogies.add(new Bogie("Sleeper", 80)); // duplicate for grouping demo
 
         System.out.println("Before Sorting:");
         for (Bogie b : bogies) {
@@ -51,6 +53,19 @@ public class TrainConsistManagementApp {
         } else {
             for (Bogie b : filteredBogies) {
                 System.out.println(b);
+            }
+        }
+
+        // ---------- UC9: Group Bogies by Type ----------
+        System.out.println("\nUC9: Group bogies by type");
+
+        Map<String, List<Bogie>> groupedBogies = bogies.stream()
+                .collect(Collectors.groupingBy(b -> b.name));
+
+        for (Map.Entry<String, List<Bogie>> entry : groupedBogies.entrySet()) {
+            System.out.println(entry.getKey() + ":");
+            for (Bogie b : entry.getValue()) {
+                System.out.println("  " + b);
             }
         }
     }
