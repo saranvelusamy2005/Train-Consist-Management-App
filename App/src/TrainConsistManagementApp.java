@@ -1,38 +1,31 @@
-import java.util.LinkedList;
+import java.util.Stack;
 
-public class TrainConsistUC4 {
-
+public class TrainConsistUC6 {
     public static void main(String[] args) {
-        System.out.println("=== Train Consist Management App ===");
-        System.out.println("\n--- UC4: Maintain Ordered Train Sequence ---");
 
-        // 1. Create a LinkedList<String> for the consist to maintain physical order
-        // We use LinkedList as the reference type to access specific methods like removeFirst()
-        LinkedList<String> trainConsist = new LinkedList<>();
+        // Create Stack for train consist
+        Stack<String> trainStack = new Stack<>();
 
-        // 2. Add initial bogies to the train
-        trainConsist.add("Engine");
-        trainConsist.add("Sleeper");
-        trainConsist.add("AC");
-        trainConsist.add("Cargo");
-        trainConsist.add("Guard");
+        System.out.println("Attaching bogies...\n");
 
-        System.out.println("Initial train formation: " + trainConsist);
+        // Push bogies (attach)
+        trainStack.push("Engine");
+        trainStack.push("Sleeper");
+        trainStack.push("AC Chair");
+        trainStack.push("Cargo");
+        trainStack.push("Guard");
 
-        // 3. Insert a Pantry Car at position 2 (Index 2 is the 3rd spot)
-        trainConsist.add(2, "Pantry Car");
-        System.out.println("After inserting Pantry Car at position 2: " + trainConsist);
+        System.out.println("Current Train Formation: " + trainStack);
 
-        // 4. Remove the first and last bogie
-        String removedFirst = trainConsist.removeFirst(); // Removes "Engine"
-        String removedLast = trainConsist.removeLast();   // Removes "Guard"
+        // Remove last attached bogie (LIFO)
+        System.out.println("\nEmergency removal (Last attached bogie):");
+        String removedBogie = trainStack.pop();
+        System.out.println("Removed: " + removedBogie);
 
-        System.out.println("Detached front: " + removedFirst);
-        System.out.println("Detached rear: " + removedLast);
+        // Show updated formation
+        System.out.println("\nUpdated Train Formation: " + trainStack);
 
-        // 5. Display the final ordered train consist
-        System.out.println("\nFinal ordered train consist: " + trainConsist);
-
-        System.out.println("\nProgram continues...");
+        // Peek last bogie
+        System.out.println("\nCurrent Last Bogie: " + trainStack.peek());
     }
 }
