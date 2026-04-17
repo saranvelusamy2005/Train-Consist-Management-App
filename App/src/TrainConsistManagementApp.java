@@ -1,5 +1,6 @@
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.regex.*;
 
 class Bogie {
     String name;
@@ -15,60 +16,76 @@ class Bogie {
     }
 }
 
+// New class for UC12
+class GoodsBogie {
+    String type;
+    String cargo;
+
+    GoodsBogie(String type, String cargo) {
+        this.type = type;
+        this.cargo = cargo;
+    }
+}
+
 public class TrainConsistManagementApp {
     public static void main(String[] args) {
 
-        // ---------- UC7: Sorting ----------
+        // ---------- UC7 ----------
         List<Bogie> bogies = new ArrayList<>();
 
         bogies.add(new Bogie("Sleeper", 72));
         bogies.add(new Bogie("AC Chair", 56));
         bogies.add(new Bogie("First Class", 40));
-        bogies.add(new Bogie("Sleeper", 80)); // for grouping + sum
-
-        System.out.println("Before Sorting:");
-        for (Bogie b : bogies) {
-            System.out.println(b);
-        }
+        bogies.add(new Bogie("Sleeper", 80));
 
         bogies.sort(Comparator.comparingInt(b -> b.capacity));
 
-        System.out.println("\nAfter Sorting (by Capacity):");
-        for (Bogie b : bogies) {
-            System.out.println(b);
-        }
-
-        // ---------- UC8: Filtering ----------
-        System.out.println("\nUC8: Filter bogies with capacity > 60");
-
+        // ---------- UC8 ----------
         List<Bogie> filtered = bogies.stream()
                 .filter(b -> b.capacity > 60)
                 .toList();
 
-        for (Bogie b : filtered) {
-            System.out.println(b);
-        }
-
-        // ---------- UC9: Grouping ----------
-        System.out.println("\nUC9: Group bogies by type");
-
+        // ---------- UC9 ----------
         Map<String, List<Bogie>> grouped = bogies.stream()
                 .collect(Collectors.groupingBy(b -> b.name));
 
-        for (String key : grouped.keySet()) {
-            System.out.println(key + ":");
-            for (Bogie b : grouped.get(key)) {
-                System.out.println("  " + b);
-            }
-        }
-
-        // ---------- UC10: Total Capacity ----------
-        System.out.println("\nUC10: Total seating capacity");
-
-        int totalCapacity = bogies.stream()
+        // ---------- UC10 ----------
+        int total = bogies.stream()
                 .map(b -> b.capacity)
                 .reduce(0, Integer::sum);
 
-        System.out.println("Total Seats = " + totalCapacity);
+        System.out.println("Total Seats = " + total);
+
+        // ---------- UC11 ----------
+        Pattern trainPattern = Pattern.compile("TRN-\\d{4}");
+        Pattern cargoPattern = Pattern.compile("PET-[A-Z]{2}");
+
+        String trainId = "TRN-1234";
+        String cargoCode = "PET-AB";
+
+        System.out.println("Train ID Valid: " + trainPattern.matcher(trainId).matches());
+        System.out.println("Cargo Code Valid: " + cargoPattern.matcher(cargoCode).matches());
+
+        // ---------- UC12: Safety Check ----------
+        System.out.println("\nUC12: Safety Compliance Check");
+
+        List<GoodsBogie> goodsList = new ArrayList<>();
+
+        goodsList.add(new GoodsBogie("Cylindrical", "Petroleum"));
+        goodsList.add(new GoodsBogie("Open", "Coal"));
+        goodsList.add(new GoodsBogie("Box", "Grain"));
+
+        // Safety rule using allMatch
+        boolean isSafe = goodsList.stream()
+                .allMatch(g ->
+                        !g.type.equalsIgnoreCase("Cylindrical")
+                                || g.cargo.equalsIgnoreCase("Petroleum")
+                );
+
+        if (isSafe) {
+            System.out.println("Train is SAFE");
+        } else {
+            System.out.println("Train is UNSAFE");
+        }
     }
 }
