@@ -1,38 +1,43 @@
-import java.util.LinkedList;
+import java.util.*;
 
-public class TrainConsistUC4 {
+class Bogie {
+    String name;
+    int capacity;
 
+    // Constructor
+    Bogie(String name, int capacity) {
+        this.name = name;
+        this.capacity = capacity;
+    }
+
+    // toString method for display
+    public String toString() {
+        return name + " - Capacity: " + capacity;
+    }
+}
+
+public class TrainConsistUC7 {
     public static void main(String[] args) {
-        System.out.println("=== Train Consist Management App ===");
-        System.out.println("\n--- UC4: Maintain Ordered Train Sequence ---");
 
-        // 1. Create a LinkedList<String> for the consist to maintain physical order
-        // We use LinkedList as the reference type to access specific methods like removeFirst()
-        LinkedList<String> trainConsist = new LinkedList<>();
+        // Create list of bogies
+        List<Bogie> bogies = new ArrayList<>();
 
-        // 2. Add initial bogies to the train
-        trainConsist.add("Engine");
-        trainConsist.add("Sleeper");
-        trainConsist.add("AC");
-        trainConsist.add("Cargo");
-        trainConsist.add("Guard");
+        // Add passenger bogies
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("AC Chair", 56));
+        bogies.add(new Bogie("First Class", 40));
 
-        System.out.println("Initial train formation: " + trainConsist);
+        System.out.println("Before Sorting:");
+        for (Bogie b : bogies) {
+            System.out.println(b);
+        }
 
-        // 3. Insert a Pantry Car at position 2 (Index 2 is the 3rd spot)
-        trainConsist.add(2, "Pantry Car");
-        System.out.println("After inserting Pantry Car at position 2: " + trainConsist);
+        // Sort using Comparator (ascending by capacity)
+        bogies.sort(Comparator.comparingInt(b -> b.capacity));
 
-        // 4. Remove the first and last bogie
-        String removedFirst = trainConsist.removeFirst(); // Removes "Engine"
-        String removedLast = trainConsist.removeLast();   // Removes "Guard"
-
-        System.out.println("Detached front: " + removedFirst);
-        System.out.println("Detached rear: " + removedLast);
-
-        // 5. Display the final ordered train consist
-        System.out.println("\nFinal ordered train consist: " + trainConsist);
-
-        System.out.println("\nProgram continues...");
+        System.out.println("\nAfter Sorting (by Capacity):");
+        for (Bogie b : bogies) {
+            System.out.println(b);
+        }
     }
 }
