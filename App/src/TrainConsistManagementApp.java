@@ -10,19 +10,18 @@ class Bogie {
         this.capacity = capacity;
     }
 
-    // toString method for display
+    // toString method
     public String toString() {
         return name + " - Capacity: " + capacity;
     }
 }
 
-public class TrainConsistManagementApp{
+public class TrainConsistManagementApp {
     public static void main(String[] args) {
 
-        // Create list of bogies
+        // ---------- UC7: Create & Sort Bogies ----------
         List<Bogie> bogies = new ArrayList<>();
 
-        // Add passenger bogies
         bogies.add(new Bogie("Sleeper", 72));
         bogies.add(new Bogie("AC Chair", 56));
         bogies.add(new Bogie("First Class", 40));
@@ -32,12 +31,27 @@ public class TrainConsistManagementApp{
             System.out.println(b);
         }
 
-        // Sort using Comparator (ascending by capacity)
+        // Sort using Comparator
         bogies.sort(Comparator.comparingInt(b -> b.capacity));
 
         System.out.println("\nAfter Sorting (by Capacity):");
         for (Bogie b : bogies) {
             System.out.println(b);
+        }
+
+        // ---------- UC8: Filter using Streams ----------
+        System.out.println("\nUC8: Filter bogies with capacity > 60");
+
+        List<Bogie> filteredBogies = bogies.stream()
+                .filter(b -> b.capacity > 60)
+                .toList();
+
+        if (filteredBogies.isEmpty()) {
+            System.out.println("No bogies match the condition.");
+        } else {
+            for (Bogie b : filteredBogies) {
+                System.out.println(b);
+            }
         }
     }
 }
